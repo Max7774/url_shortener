@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uuid        String      @unique
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  isAdmin     Boolean
+  password    String      @unique
+  username    String      @unique
+}
+
+model Campaign {
+  uuid        String      @unique
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  fileName    String
+  url         Url[] 
+}
+
+model Url {
+  uuid         String      @unique
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt      @map("updated_at")
+
+  originalUrl  String
+  shortUrl     String
+  id           String      
+  isClicked    Boolean
+
+  campaignUuid String
+  campaign     Campaign @relation(fields: [campaignUuid], references: [uuid])
+}
